@@ -42,7 +42,7 @@ You can copy the file `Tiktok_uploader.py` in your project folder and use it lik
 ```python
 from Tiktok_uploader import uploadVideo
 
-session_id = "7a9f3c5d8f6e4b2a1c9d8e7f6a5b4c3d"
+session_id = "87214cb9062df9515024e0ae4ef82359"
 file = "my_video.mp4"
 title = "MY SUPER TITLE"
 tags = ["Funny", "Joke", "fyp"]
