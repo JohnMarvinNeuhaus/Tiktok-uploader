@@ -1,7 +1,7 @@
 # Written by MiniGlome
 # Contact: MiniGlome@protonmail.com
 
-import requests, datetime, hashlib, hmac, random, zlib, json
+import requests, datetime, hashlib, hmac, random, zlib, json, logging
 
 def sign(key, msg):
 	return hmac.new(key, msg.encode('utf-8'), hashlib.sha256).digest()
@@ -75,7 +75,9 @@ def uploadVideo(session_id, video, title, tags, schedule_time=0, verbose=True):
 
 	url = "https://www.tiktok.com/api/v1/video/upload/auth/"
 	r = session.get(url)
-	assertSuccess(url, r)
+	if not assertSuccess(url, r):
+		return False
+	print(f"Response JSON: {r.json()}")
 	access_key = r.json()["video_token_v5"]["access_key_id"]
 	secret_key = r.json()["video_token_v5"]["secret_acess_key"]
 	session_token = r.json()["video_token_v5"]["session_token"]
@@ -96,6 +98,7 @@ def uploadVideo(session_id, video, title, tags, schedule_time=0, verbose=True):
 	signature = AWSsignature(access_key, secret_key, request_parameters, headers)
 	authorization = f"AWS4-HMAC-SHA256 Credential={access_key}/{datestamp}/us-east-1/vod/aws4_request, SignedHeaders=x-amz-date;x-amz-security-token, Signature={signature}"
 	headers["authorization"] = authorization
+
 	r = session.get(f"{url}?{request_parameters}", headers=headers)
 	if not assertSuccess(url, r):
 		return False
